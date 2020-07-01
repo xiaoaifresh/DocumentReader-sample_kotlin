@@ -8,4 +8,6 @@
     <string name="recognizeImageLink">Use recognizeImage() method</string>
     <string name="showScannerLink">Use showScanner() method</string>
     <string name="doRfidCb">Perform NFC chip reading</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
