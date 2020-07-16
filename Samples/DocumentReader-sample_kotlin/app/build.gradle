@@ -7,9 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     allprojects{
         repositories{
-            maven {
-                url "http://maven.regulaforensics.com/RegulaDocumentReader"
-            }
+            maven { url 'http://maven.regulaforensics.com/RegulaDocumentReader/Beta' }
         }
     }
     compileSdkVersion 28
@@ -41,8 +39,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    implementation 'com.regula.documentreader.fullrfid:core:+@aar'
-    implementation('com.regula.documentreader:api:+@aar') {
-        transitive = true;
+    implementation 'com.regula.documentreader.ocrandmrzrfid:core:5.1.3155@aar'
+    implementation('com.regula.documentreader:api:5.1.2624@aar') {
+        transitive = true
     }
 }

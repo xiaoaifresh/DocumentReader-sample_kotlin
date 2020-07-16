@@ -11,6 +11,8 @@ import com.regula.documentreader.api.completions.IDocumentReaderCompletion
 import com.regula.documentreader.api.completions.IDocumentReaderPrepareCompletion
 import com.regula.documentreader.api.enums.DocReaderAction
 import com.regula.documentreader.api.enums.eGraphicFieldType
+import com.regula.documentreader.api.enums.eRFID_Password_Type
+import com.regula.documentreader.api.enums.eVisualFieldType
 import kotlinx.android.synthetic.main.fragment_document_scan.*
 
 class DocumentScanFragment : Fragment() {
@@ -34,11 +36,41 @@ class DocumentScanFragment : Fragment() {
                     loadingDialog!!.dismiss()
                 }
 
-                // other documents
-                val documentImage =
-                    results.getGraphicFieldImageByType(eGraphicFieldType.GF_DOCUMENT_IMAGE)
-                    document_image.setImageBitmap(documentImage)
+                // chip scan
+                // setting the chip's access key - mrz on card access number
+                var accessKey: String?
+                accessKey = results.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS)
+                if (accessKey != null && accessKey.isNotEmpty()) {
+                    accessKey =
+                        results.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS)
+                            .replace("^", "").replace("\n", "")
+                    DocumentReader.Instance().rfidScenario().setMrz(accessKey)
+                    DocumentReader.Instance().rfidScenario().setPacePasswordType(
+                        eRFID_Password_Type.PPT_MRZ
+                    )
+                } else {
+                    accessKey =
+                        results.getTextFieldValueByType(eVisualFieldType.FT_CARD_ACCESS_NUMBER)
+                    if (accessKey != null && accessKey.isNotEmpty()) {
+                        DocumentReader.Instance().rfidScenario().setPassword(accessKey)
+                        DocumentReader.Instance().rfidScenario().setPacePasswordType(
+                            eRFID_Password_Type.PPT_CAN
+                        )
+                    }
+                }
 
+                // starting chip reading
+                DocumentReader.Instance()
+                    .startRFIDReader(requireContext()) { rfidAction, results_RFIDReader, _ ->
+                        if (rfidAction == DocReaderAction.COMPLETE) {
+                            val documentImage =
+                                results.getGraphicFieldImageByType(eGraphicFieldType.GF_DOCUMENT_IMAGE)
+                            document_image.setImageBitmap(documentImage)
+                        }
+                        if (rfidAction == DocReaderAction.CANCEL) {
+                            return@startRFIDReader
+                        }
+                    }
 
             }
         }
