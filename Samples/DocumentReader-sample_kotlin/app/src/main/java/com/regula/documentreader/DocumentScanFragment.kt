@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.regula.documentreader.api.DocumentReader
 import com.regula.documentreader.api.completions.IDocumentReaderCompletion
 import com.regula.documentreader.api.completions.IDocumentReaderPrepareCompletion
@@ -69,6 +70,9 @@ class DocumentScanFragment : Fragment() {
                         }
                         if (rfidAction == DocReaderAction.CANCEL) {
                             return@startRFIDReader
+                        }
+                        if (rfidAction == DocReaderAction.ERROR) {
+                            Toast.makeText(requireContext(), "Error:$error", Toast.LENGTH_LONG).show()
                         }
                     }
 
